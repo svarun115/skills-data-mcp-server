@@ -136,6 +136,33 @@ def list_skill_files(skill: str) -> list[dict]:
     ]
 
 
+@mcp.tool()
+def delete_skill_file(skill: str, filename: str) -> str:
+    """Delete a file from the skill's persistent storage directory.
+
+    Use this to clean up files that are no longer needed by a skill.
+
+    Args:
+        skill: The skill name (e.g., 'fitness-coach', 'daily-tracker', 'cos')
+        filename: The filename to delete (e.g., 'weekly-plan.md')
+    """
+    _validate_skill(skill)
+    _validate_filename(filename)
+
+    path = _skill_dir(skill) / filename
+    if not path.exists():
+        raise FileNotFoundError(f"No file {filename!r} found for skill {skill!r}")
+
+    path.unlink()
+
+    meta = _read_meta(skill)
+    if filename in meta:
+        del meta[filename]
+        _write_meta(skill, meta)
+
+    return f"Deleted {skill}/{filename}"
+
+
 def main():
     """Initialize the MCP server and run in selected mode."""
     import sys
