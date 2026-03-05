@@ -76,11 +76,15 @@ async def _handle_request(body: dict) -> Optional[dict]:
             raw = await _mcp_app.call_tool(name, args)
 
             # Normalize result to MCP content format
-            if (
-                isinstance(raw, dict)
-                and "content" in raw
-                and isinstance(raw["content"], list)
-            ):
+            # FastMCP returns a list of TextContent/content objects
+            if isinstance(raw, list):
+                content = [
+                    {"type": getattr(item, "type", "text"), "text": getattr(item, "text", str(item))}
+                    if not isinstance(item, dict)
+                    else item
+                    for item in raw
+                ]
+            elif isinstance(raw, dict) and "content" in raw and isinstance(raw["content"], list):
                 content = raw["content"]
             else:
                 text = json.dumps(raw, indent=2, ensure_ascii=False) if not isinstance(raw, str) else raw
