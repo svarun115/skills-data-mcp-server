@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # Global — set at startup
 _mcp_app: Optional[FastMCP] = None
 
-fastapi_app = FastAPI(title="Skills Data MCP Server")
+fastapi_app = FastAPI(title="Resources MCP Server")
 
 
 # ─── JSON-RPC helpers ─────────────────────────────────────────────────────────
@@ -54,7 +54,7 @@ async def _handle_request(body: dict) -> Optional[dict]:
             return _ok(req_id, {
                 "protocolVersion": "2024-11-05",
                 "capabilities": {"tools": {}},
-                "serverInfo": {"name": "skills-data-mcp-server", "version": "0.1.0"},
+                "serverInfo": {"name": "resources-mcp-server", "version": "0.2.0"},
             })
 
         elif method == "ping":
@@ -156,5 +156,5 @@ async def healthz():
 def run_http_server(app: FastMCP, host: str = "0.0.0.0", port: int = 6666):
     global _mcp_app
     _mcp_app = app
-    logger.info(f"Skills Data MCP Server starting on http://{host}:{port}/mcp")
+    logger.info(f"Resources MCP Server starting on http://{host}:{port}/mcp")
     uvicorn.run(fastapi_app, host=host, port=port, log_level="info")
