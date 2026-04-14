@@ -10,10 +10,10 @@ COPY src/ ./src/
 RUN pip install --upgrade pip hatchling && pip install --no-cache-dir .
 
 # Create data directory
-RUN mkdir -p /data/resources
+RUN mkdir -p /data/skills
 
 RUN useradd -m -u 1000 skillsuser \
-    && chown -R skillsuser:skillsuser /app /data/resources
+    && chown -R skillsuser:skillsuser /app /data/skills
 USER skillsuser
 
 EXPOSE 6666
